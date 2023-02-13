@@ -1,0 +1,44 @@
+task1
+[ec2-user@ip-172-31-32-22 ~]$ docker pull httpd
+[ec2-user@ip-172-31-32-22 ~]$ docker run -itd --name webserver -p 80:80 httpd
+aaf763df87e9a0247168d3ae99c726ece78405c2b2c54cada0d3f32151ada2f0
+[ec2-user@ip-172-31-32-22 ~]$ curl localhost
+<html><body><h1>It works!</h1></body></html>
+[ec2-user@ip-172-31-32-22 ~]$ 
+[ec2-user@ip-172-31-32-22 ~]$ docker ps
+CONTAINER ID   IMAGE     COMMAND              CREATED              STATUS              PORTS                               NAMES
+aaf763df87e9   httpd     "httpd-foreground"   About a minute ago   Up About a minute   0.0.0.0:80->80/tcp, :::80->80/tcp   webserver
+[ec2-user@ip-172-31-32-22 ~]$ 
+
+
+task2
+[ec2-user@ip-172-31-32-22 ~]$ docker pull ubuntu
+[ec2-user@ip-172-31-32-22 ~]$ docker run -itd --name myctr -p 8080:80 ubuntu
+f6e25ae0b9b8e1dd775895636ee88929688e0db99387b3e68053294c060bf97a
+[ec2-user@ip-172-31-32-22 ~]$ docker ps
+CONTAINER ID   IMAGE     COMMAND       CREATED         STATUS         PORTS                                   NAMES
+f6e25ae0b9b8   ubuntu    "/bin/bash"   5 seconds ago   Up 4 seconds   0.0.0.0:8080->80/tcp, :::8080->80/tcp   myctr
+[ec2-user@ip-172-31-32-22 ~]$ docker exec -it myctr bash
+root@f6e25ae0b9b8:/# apt update
+root@f6e25ae0b9b8:/# apt install nginx 
+root@f6e25ae0b9b8:/# service nginx start 
+ * Starting nginx nginx                                                                                                                                                       [ OK ] 
+root@f6e25ae0b9b8:/# service nginx status
+ * nginx is running
+
+
+task3
+[ec2-user@ip-172-31-32-22 ~]$ docker pull httpd
+[ec2-user@ip-172-31-32-22 ~]$ wget https://www.free-css.com/assets/files/free-css-templates/download/page286/safecam.zip
+[ec2-user@ip-172-31-32-22 ~]$ unzip safecam.zip
+[ec2-user@ip-172-31-32-22 ~]$ docker run --name apache -p 90:80 -v /home/ec2-user/cctv-website-template:/usr/local/apache2/htdocs/ -d httpd
+
+
+task4
+[ec2-user@ip-172-31-32-22 ~]$ docker pull nginx
+[ec2-user@ip-172-31-32-22 ~]$ docker run --name nginx -d nginx
+[ec2-user@ip-172-31-32-22 ~]$ docker cp nginx:/etc/nginx/conf.d/default.conf .
+[ec2-user@ip-172-31-32-22 ~]$ vim default.conf 
+[ec2-user@ip-172-31-32-22 ~]$ docker run --name mynginx -p 70:80 -v /home/ec2-user/startup-website-template/:/usr/share/nginx/html -d nginx
+9fb5d48e763ea1ed808ed26d9900512f84dd2a7851e2b47544b408fc9d8811e7
+[ec2-user@ip-172-31-32-22 ~]$ 
