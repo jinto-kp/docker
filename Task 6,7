@@ -1,0 +1,113 @@
+Task6
+
+[ec2-user@ip-172-31-32-22 ~]$ vim Dockerfile 
+FROM centos:7
+
+RUN yum update -y && yum install httpd httpd-tools -y
+
+COPY index.html /var/www/html/
+
+MAINTAINER jinto
+
+EXPOSE 80
+
+CMD     ["/usr/sbin/httpd","-D","FOREGROUND"]
+
+ec2-user@ip-172-31-32-22 ~]$ docker build -t jintokp .
+Sending build context to Docker daemon  24.89MB
+Step 1/6 : FROM centos:7
+ ---> eeb6ee3f44bd
+Step 2/6 : RUN yum update -y && yum install httpd httpd-tools -y
+ ---> Using cache
+ ---> ff12d6f6d5b8
+Step 3/6 : COPY index.html /var/www/html/
+ ---> b831bd0344cd
+Step 4/6 : MAINTAINER jinto
+ ---> Running in 28f73257b253
+Removing intermediate container 28f73257b253
+ ---> ffe537663f3d
+Step 5/6 : EXPOSE 80
+ ---> Running in cfe48fa3f5a6
+Removing intermediate container cfe48fa3f5a6
+ ---> 85e2e867d391
+Step 6/6 : CMD     ["/usr/sbin/httpd","-D","FOREGROUND"]
+ ---> Running in dc7139841887
+Removing intermediate container dc7139841887
+ ---> 0ed0f4a1bebd
+Successfully built 0ed0f4a1bebd
+Successfully tagged jintokp:latest
+
+[ec2-user@ip-172-31-32-22 ~]$ docker run -itd -p 80:80 jintokp
+5a1b2ff1b5bab7cd7851728a72860425f45c8c985f834fdc236922f1785ea053
+
+
+
+
+
+Task7
+
+[ec2-user@ip-172-31-32-22 ~]$ vim dockerfile 
+FROM centos:7
+
+RUN yum update -y && yum install httpd httpd-tools -y
+`
+COPY index.html /usr/local/apache2/htdocs
+
+MAINTAINER jinto
+
+CMD ["/usr/sbin/httpd","-D","FOREGROUND"]
+
+EXPOSE 80
+
+[ec2-user@ip-172-31-32-22 ~]$ docker build -t custom:jinto .
+[ec2-user@ip-172-31-32-22 ~]$ docker run -itd -p 80:80 custom:jinto 
+
+[ec2-user@ip-172-31-32-22 ~]$ docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: jintokp
+Password: 
+WARNING! Your password will be stored unencrypted in /home/ec2-user/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+[ec2-user@ip-172-31-32-22 ~]$ 
+[ec2-user@ip-172-31-32-22 ~]$ docker images
+REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
+custom        jinto     481598e842ef   20 minutes ago   142MB
+jinto         latest    a8f4d8f56f65   3 hours ago      573MB
+jinto         v1        a8f4d8f56f65   3 hours ago      573MB
+custom        httpd     a8f4d8f56f65   3 hours ago      573MB
+nginx         latest    3f8a00f137a0   8 days ago       142MB
+httpd         latest    3a4ea134cf8e   8 days ago       145MB
+ubuntu        22.04     58db3edaf2be   3 weeks ago      77.8MB
+ubuntu        latest    58db3edaf2be   3 weeks ago      77.8MB
+hello-world   latest    feb5d9fea6a5   17 months ago    13.3kB
+centos        7         eeb6ee3f44bd   17 months ago    204MB
+centos        latest    5d0da3dc9764   17 months ago    231MB
+[ec2-user@ip-172-31-32-22 ~]$ docker image tag custom:jinto jintokp/customnginx:1
+[ec2-user@ip-172-31-32-22 ~]$ docker images
+REPOSITORY            TAG       IMAGE ID       CREATED          SIZE
+jintokp/customnginx   1         481598e842ef   22 minutes ago   142MB
+custom                jinto     481598e842ef   22 minutes ago   142MB
+custom                httpd     a8f4d8f56f65   3 hours ago      573MB
+jinto                 latest    a8f4d8f56f65   3 hours ago      573MB
+jinto                 v1        a8f4d8f56f65   3 hours ago      573MB
+nginx                 latest    3f8a00f137a0   8 days ago       142MB
+httpd                 latest    3a4ea134cf8e   8 days ago       145MB
+ubuntu                22.04     58db3edaf2be   3 weeks ago      77.8MB
+ubuntu                latest    58db3edaf2be   3 weeks ago      77.8MB
+hello-world           latest    feb5d9fea6a5   17 months ago    13.3kB
+centos                7         eeb6ee3f44bd   17 months ago    204MB
+centos                latest    5d0da3dc9764   17 months ago    231MB
+[ec2-user@ip-172-31-32-22 ~]$ docker push jintokp/customnginx:1
+The push refers to repository [docker.io/jintokp/customnginx]
+1bdd80e8f7fe: Pushed 
+3ea1bc01cbfe: Mounted from library/nginx 
+a76121a5b9fd: Mounted from library/nginx 
+2df186f5be5c: Mounted from library/nginx 
+21a95e83c568: Mounted from library/nginx 
+81e05d8cedf6: Mounted from library/nginx 
+4695cdfb426a: Mounted from library/httpd 
+1: digest: sha256:8b1e61de4728f1af115cb428c1092bb88a4a64a1107f977e35958f0f1451693d size: 1777
+[ec2-user@ip-172-31-32-22 ~]$ 
