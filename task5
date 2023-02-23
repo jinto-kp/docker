@@ -1,0 +1,23 @@
+Task 5
+[ec2-user@ip-172-31-32-22 ~]$ docker network create my-network
+[ec2-user@ip-172-31-32-22 ~]$ docker network ls
+NETWORK ID     NAME         DRIVER    SCOPE
+0250cf16f3a6   bridge       bridge    local
+f757998504f5   host         host      local
+35c9448471e3   my-network   bridge    local
+f16a28da8f4e   none         null      local
+[ec2-user@ip-172-31-32-22 ~]$ mkdir nginxx
+[ec2-user@ip-172-31-32-22 ~]$ mkdir httpdd
+[ec2-user@ip-172-31-32-22 ~]$ echo "Welcome to Nginx Website" > nginx/index.html
+[ec2-user@ip-172-31-32-22 ~]$ echo "Welcome to my HTTPD Website!!!!" > httpd/index.html
+[ec2-user@ip-172-31-32-22 ~]$ docker run --name httpd --network my-network -v $(pwd)/httpd:/usr/local/apache2/htdocs/ -d httpd
+16afe4406ec3f5f70089b242ce04075a4748b93d509b72ebcbf0f8f6d9be4c24
+[ec2-user@ip-172-31-32-22 ~]$ docker run --name nginx --network my-network -v $(pwd)/nginx:/usr/share/nginx/html:ro -d nginx
+945ef5bf486da33958f43c3a35cc60046ada8ffbf448ae67520653fcb6611245
+[ec2-user@ip-172-31-32-22 ~]$ docker run -d --name haproxy --network my-network -p 80:80 -v /home/ec2-user/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro haproxy:alpine
+80f203e424b7fe4dbd4ae8b40674222edcbfd480d3c198af70f2a5bbed15672b
+[ec2-user@ip-172-31-32-22 ~]$ docker ps
+CONTAINER ID   IMAGE            COMMAND                  CREATED         STATUS         PORTS                               NAMES
+80f203e424b7   haproxy:alpine   "docker-entrypoint.s…"   5 seconds ago   Up 5 seconds   0.0.0.0:80->80/tcp, :::80->80/tcp   haproxy
+945ef5bf486d   nginx            "/docker-entrypoint.…"   5 minutes ago   Up 5 minutes   80/tcp                              nginx
+16afe4406ec3   httpd            "httpd-foreground"       5 minutes ago   Up 5 minutes   80/tcp    
